@@ -1,0 +1,26 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: "llm_twin_mongo"
+    logging:
+      options:
+        max-size: 1g
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "llm_twin"
+      MONGO_INITDB_ROOT_PASSWORD: "llm_twin"
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - local
+    restart: always
+
+volumes:
+  mongo_data:
+  qdrant_data:
+
+
+networks:
+  local:
+    driver: bridge
