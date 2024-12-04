@@ -19,3 +19,8 @@ build-backend = "poetry.core.masonry.api"
 [tool.poe.tasks]
 # Data pipelines
 run-digital-data-etl = "poetry run python -m tools.run --run-etl --no-cache --etl-config-filename digital_data_etl.yaml"
+
+# Utility pipelines
+run-export-artifact-to-json-pipeline = "poetry run python -m tools.run --no-cache --run-export-artifact-to-json"
+run-export-data-warehouse-to-json = "poetry run python -m tools.data_warehouse --export-raw-data"
+run-import-data-warehouse-from-json = "poetry run python -m tools.data_warehouse --import-raw-data"

@@ -11,7 +11,8 @@ from llm_twin.application import utils
 
 
 user_full_name = "Paul Iusztin"
-link = "https://decodingml.substack.com/p/real-time-feature-pipelines-with?r=1ttoeh"
+# link = "https://decodingml.substack.com/p/real-time-feature-pipelines-with?r=1ttoeh"
+link = "https://medium.com/decodingml/an-end-to-end-framework-for-production-ready-llm-systems-by-building-your-llm-twin-2cc6bb01141f"
 
 if __name__ == "__main__":
 

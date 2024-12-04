@@ -12,6 +12,14 @@ class MediumCrawler(BaseSeleniumCrawler):
     def set_extra_driver_options(self, options) -> None:
         options.add_argument(r"--profile-directory=Profile 2")
 
+        # Disable DNS over HTTPS
+        local_state = {
+            "dns_over_https.mode": "off",
+            "dns_over_https.templates": "",
+        }
+
+        options.add_experimental_option("localState", local_state)
+
     def extract(self, link: str, **kwargs) -> None:
         old_model = self.model.find(link=link)
         if old_model is not None:
@@ -21,7 +29,15 @@ class MediumCrawler(BaseSeleniumCrawler):
 
         logger.info(f"Starting scrapping Medium article: {link}")
 
-        self.driver.get(link)
+        try:
+            self.driver.get(link)
+        except Exception as e:
+            logger.error(f"Error while opening the page: {e}")
+
+            self.driver.close()
+            return
+
+        # Scroll to the bottom of the page
         self.scroll_page()
 
         soup = BeautifulSoup(self.driver.page_source, "html.parser")
