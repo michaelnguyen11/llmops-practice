@@ -10,15 +10,19 @@ from qdrant_client.http import exceptions
 from qdrant_client.http.models import Distance, VectorParams
 from qdrant_client.models import CollectionInfo, PointStruct, Record
 
-from llm_twin.application.networks.embeddings import EmdeddingModelSingleton
+from llm_twin.application.networks.embeddings import EmbeddingModelSingleton
 from llm_twin.domain.exceptions import ImproperlyConfigured
 from llm_twin.domain.types import DataCategory
 from llm_twin.infrastructure.db.qdrant import connection
 
 T = TypeVar("T", bound="VectorBaseDocument")
 
-
+# OVM (Object Vector Mapping) base class
+# It will support CRUD operations on top of Qdrant DB
+# Inherits from Pydantic's BaseModel -> structure a single record's attribues from the vector DB.
+# Inherits from Generic[T] -> all subclasses of the VectorBaseDocument will adapt to that given class.
 class VectorBaseDocument(BaseModel, Generic[T], ABC):
+    # Every OVM will be initialized by default UUID4 as its unique identifier.
     id: UUID4 = Field(default_factory=uuid.uuid4)
 
     def __eq__(self, value: object) -> bool:
@@ -195,7 +199,7 @@ class VectorBaseDocument(BaseModel, Generic[T], ABC):
     ) -> bool:
         if use_vector_index is True:
             vectors_config = VectorParams(
-                size=EmdeddingModelSingleton().embedding_size, distance=Distance.COSINE
+                size=EmbeddingModelSingleton().embedding_size, distance=Distance.COSINE
             )
         else:
             vectors_config = {}

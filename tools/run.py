@@ -9,6 +9,7 @@ from llm_twin import settings
 from pipelines import (
     digital_data_etl,
     export_artifact_to_json,
+    feature_engineering
 )
 
 @click.command(
@@ -57,6 +58,12 @@ Examples:
     default="digital_data_etl.yaml",
 )
 @click.option(
+    "--run-feature-engineering",
+    is_flag=True,
+    default=False,
+    help="Whether to run the Feature Engineering pipeline",
+)
+@click.option(
     "--run-export-artifact-to-json",
     is_flag=True,
     default=False,
@@ -73,10 +80,14 @@ def main(
     run_etl: bool = False,
     etl_config_filename: str = "digital_data_etl.yaml",
     run_export_artifact_to_json: bool = False,
+    run_feature_engineering: bool = False,
     export_settings: bool = False,
 ) -> None:
     assert (
-        run_etl or run_export_artifact_to_json or export_settings
+        run_etl
+        or run_export_artifact_to_json
+        or export_settings
+        or run_feature_engineering
     ), "Please specify an action to run."
 
     if export_settings:
@@ -112,6 +123,11 @@ def main(
         )
         export_artifact_to_json.with_options(**pipeline_args)(**run_args_etl)
 
+    if run_feature_engineering:
+        run_args_fe = {}
+        pipeline_args["config_path"] = root_dir / "configs" / "feature_engineering.yaml"
+        pipeline_args["run_name"] = f"feature_engineering_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        feature_engineering.with_options(**pipeline_args)(**run_args_fe)
 
 if __name__ == "__main__":
     main()

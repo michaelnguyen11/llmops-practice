@@ -5,17 +5,21 @@ from langchain.text_splitter import (
     SentenceTransformersTokenTextSplitter,
 )
 
-from llm_twin.application.networks import EmdeddingModelSingleton
+from llm_twin.application.networks import EmbeddingModelSingleton
 
-embedding_model = EmdeddingModelSingleton()
+embedding_model = EmbeddingModelSingleton()
 
 
 def chunk_text(text: str, chunk_size: int = 500, chunk_overlap: int = 50) -> list[str]:
+    # Split text based on a given separator or chunk size
+    # Using the separator, we first try to find paragraphs in the given text
     character_splitter = RecursiveCharacterTextSplitter(
         separators=["\n\n"], chunk_size=chunk_size, chunk_overlap=0
     )
+    # But if there are no paragraphs or they are too long, we cut it at a given chunk size
     text_split_by_characters = character_splitter.split_text(text)
 
+    # Ensure that the chunk doesn't exceed the maximum input length of the embedding model.
     token_splitter = SentenceTransformersTokenTextSplitter(
         chunk_overlap=chunk_overlap,
         tokens_per_chunk=embedding_model.max_input_length,
@@ -34,13 +38,15 @@ def chunk_document(text: str, min_length: int, max_length: int) -> list[str]:
 
 
 def chunk_article(text: str, min_length: int, max_length: int) -> list[str]:
+    # Find all the sentences within the given text by looking for periods,question marks or exclamation point followed by a space.
     sentences = re.split(r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s", text)
 
     extracts = []
     current_chunk = ""
 
+    # Groups sentences into a single chunk until  the max_length limi is reached.
     for sentence in sentences:
-        sentence = sentences.strip()
+        sentence = sentence.strip()
         if not sentence:
             continue
 

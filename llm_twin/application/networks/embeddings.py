@@ -14,8 +14,7 @@ from llm_twin.settings import settings
 
 from .base import SingletonMeta
 
-
-class EmdeddingModelSingleton(metaclass=SingletonMeta):
+class EmbeddingModelSingleton(metaclass=SingletonMeta):
     """
     A Singleton class that provides a pre-trained transformer model for generating embeddings of text.
     """

@@ -1,3 +1,3 @@
-from .embeddings import CrossEncoderModelSingleton, EmdeddingModelSingleton
+from .embeddings import CrossEncoderModelSingleton, EmbeddingModelSingleton
 
-__all__ = ["CrossEncoderModelSingleton", "EmdeddingModelSingleton"]
+__all__ = ["CrossEncoderModelSingleton", "EmbeddingModelSingleton"]

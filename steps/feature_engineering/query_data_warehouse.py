@@ -11,6 +11,7 @@ from llm_twin.domain.documents import (
     Document,
     RepositoryDocument,
     UserDocument,
+    PostDocument,
 )
 
 
@@ -27,6 +28,8 @@ def query_data_warehouse(
         # if user does not exist, it throws an error
         first_name, last_name = utils.split_user_full_name(author_full_name)
         logger.info(f"First name: {first_name}, Last name: {last_name}")
+        # Get or create a UserDocument instance using the first and last names.
+        # Then append this instance to the authors list. If the user doesn't exist, it throws an error.
         user = UserDocument.get_or_create(first_name=first_name, last_name=last_name)
         authors.append(user)
 
@@ -42,7 +45,7 @@ def query_data_warehouse(
     # Compute a descriptive metadata dictionary in ZenML
     step_context = get_step_context()
     step_context.add_output_metadata(
-        output_name="raw_documents", metadata=__get_metadata(documents)
+        output_name="raw_documents", metadata=_get_metadata(documents)
     )
 
     return documents
@@ -50,10 +53,11 @@ def query_data_warehouse(
 
 def fetch_all_data(user: UserDocument) -> dict[str, list[NoSQLBaseDocument]]:
     user_id = str(user.id)
-    with ThreadPoolExecutor as executor:
+    with ThreadPoolExecutor() as executor:
         # query on a different thread
         future_to_query = {
             executor.submit(__fetch_articles, user_id): "articles",
+            executor.submit(__fetch_posts, user_id): "posts",
             executor.submit(__fetch_repositories, user_id): "repositories",
         }
 
@@ -62,22 +66,32 @@ def fetch_all_data(user: UserDocument) -> dict[str, list[NoSQLBaseDocument]]:
             query_name = future_to_query[future]
             try:
                 results[query_name] = future.result()
-            except Exception as e:
-                logger.error(f"'{query_name}' request failed: {e}")
+            except Exception:
+                logger.exception(f"'{query_name}' request failed.")
+
                 results[query_name] = []
 
     return results
 
 
-def __fetch_articles(user_id: str) -> list[NoSQLBaseDocument]:
+def __fetch_articles(user_id) -> list[NoSQLBaseDocument]:
     return ArticleDocument.bulk_find(author_id=user_id)
 
 
-def __fetch_repositories(user_id: str) -> list[NoSQLBaseDocument]:
+def __fetch_posts(user_id) -> list[NoSQLBaseDocument]:
+    return PostDocument.bulk_find(author_id=user_id)
+
+
+def __fetch_repositories(user_id) -> list[NoSQLBaseDocument]:
     return RepositoryDocument.bulk_find(author_id=user_id)
 
 
-def __get_metadata(documents: list[Document]) -> dict:
+def _get_metadata(documents: list[Document]) -> dict:
+    """
+    Takes the list of queried documents and authors and counts the
+    number of them relative to each data category.
+    """
+
     metadata = {
         "num_documents": len(documents),
     }
