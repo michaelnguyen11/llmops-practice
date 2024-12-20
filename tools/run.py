@@ -9,7 +9,8 @@ from llm_twin import settings
 from pipelines import (
     digital_data_etl,
     export_artifact_to_json,
-    feature_engineering
+    feature_engineering,
+    training
 )
 
 @click.command(
@@ -70,6 +71,12 @@ Examples:
     help="Whether to run the Artifact -> JSON pipeline",
 )
 @click.option(
+    "--run-training",
+    is_flag=True,
+    default=False,
+    help="Whether to run the training pipeline.",
+)
+@click.option(
     "--export-settings",
     is_flag=True,
     default=False,
@@ -81,6 +88,7 @@ def main(
     etl_config_filename: str = "digital_data_etl.yaml",
     run_export_artifact_to_json: bool = False,
     run_feature_engineering: bool = False,
+    run_training: bool = False,
     export_settings: bool = False,
 ) -> None:
     assert (
@@ -88,6 +96,7 @@ def main(
         or run_export_artifact_to_json
         or export_settings
         or run_feature_engineering
+        or run_training
     ), "Please specify an action to run."
 
     if export_settings:
@@ -128,6 +137,12 @@ def main(
         pipeline_args["config_path"] = root_dir / "configs" / "feature_engineering.yaml"
         pipeline_args["run_name"] = f"feature_engineering_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
         feature_engineering.with_options(**pipeline_args)(**run_args_fe)
+
+    if run_training:
+        run_args_cd = {}
+        pipeline_args["config_path"] = root_dir / "configs" / "training.yaml"
+        pipeline_args["run_name"] = f"training_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        training.with_options(**pipeline_args)(**run_args_cd)
 
 if __name__ == "__main__":
     main()

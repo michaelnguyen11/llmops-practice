@@ -9,5 +9,5 @@ parameters:
   artifact_names:
     - raw_documents
     - cleaned_documents
-    - instruct_datasets
-    - preference_datasets
+    # - instruct_datasets
+    # - preference_datasets

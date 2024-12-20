@@ -25,3 +25,30 @@ run-feature-engineering-pipeline = "poetry run python -m tools.run --no-cache --
 run-export-artifact-to-json-pipeline = "poetry run python -m tools.run --no-cache --run-export-artifact-to-json"
 run-export-data-warehouse-to-json = "poetry run python -m tools.data_warehouse --export-raw-data"
 run-import-data-warehouse-from-json = "poetry run python -m tools.data_warehouse --import-raw-data"
+
+# Training pipelines
+run-training-pipeline = "poetry run python -m tools.run --no-cache --run-training"
+
+# Infrastructure
+## Local infrastructure
+local-docker-up = "docker compose up -d"
+local-docker-down = "docker compose stop"
+local-zenml-up = "zenml login --local"
+local-zenml-down = "zenml down"
+
+local-infrastructure-up = [
+    "local-docker-up",
+    "local-zenml-up",
+]
+
+local-infrastructure-down = [
+    "local-docker-down",
+    "local-zenml-down",
+]
+
+## SageMaker
+create-sagemaker-role = "poetry run python -m llm_twin.infrastructure.aws.roles.create_sagemaker_role"
+create-sagemaker-execution-role = "poetry run python -m llm_twin.infrastructure.aws.roles.create_sagemaker_execution_role"
+deploy-inference-endpoint = "poetry run python -m llm_twin.infrastructure.aws.deploy.huggingface.run"
+test-sagemaker-endpoint = "poetry run python -m llm_twin.model.inference.test"
+delete-inference-endpoint = "poetry run python -m llm_twin.infrastructure.aws.deploy.delete_sagemaker_endpoint"
