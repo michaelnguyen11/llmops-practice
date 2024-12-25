@@ -10,7 +10,8 @@ from pipelines import (
     digital_data_etl,
     export_artifact_to_json,
     feature_engineering,
-    training
+    training,
+    evaluation
 )
 
 @click.command(
@@ -77,6 +78,12 @@ Examples:
     help="Whether to run the training pipeline.",
 )
 @click.option(
+    "--run-evaluation",
+    is_flag=True,
+    default=False,
+    help="Whether to export your settings to ZenML or not.",
+)
+@click.option(
     "--export-settings",
     is_flag=True,
     default=False,
@@ -89,6 +96,7 @@ def main(
     run_export_artifact_to_json: bool = False,
     run_feature_engineering: bool = False,
     run_training: bool = False,
+    run_evaluation: bool = False,
     export_settings: bool = False,
 ) -> None:
     assert (
@@ -97,6 +105,7 @@ def main(
         or export_settings
         or run_feature_engineering
         or run_training
+        or run_evaluation
     ), "Please specify an action to run."
 
     if export_settings:
@@ -143,6 +152,12 @@ def main(
         pipeline_args["config_path"] = root_dir / "configs" / "training.yaml"
         pipeline_args["run_name"] = f"training_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
         training.with_options(**pipeline_args)(**run_args_cd)
+
+    if run_evaluation:
+        run_args_cd = {}
+        pipeline_args["config_path"] = root_dir / "configs" / "evaluation.yaml"
+        pipeline_args["run_name"] = f"training_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        evaluation.with_options(**pipeline_args)(**run_args_cd)
 
 if __name__ == "__main__":
     main()
