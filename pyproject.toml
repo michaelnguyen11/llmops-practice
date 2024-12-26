@@ -30,6 +30,9 @@ run-import-data-warehouse-from-json = "poetry run python -m tools.data_warehouse
 run-training-pipeline = "poetry run python -m tools.run --no-cache --run-training"
 run-evaluation-pipeline = "poetry run python -m tools.run --no-cache --run-evaluation"
 
+# Inference
+call-rag-retrieval-module = "poetry run python -m tools.rag"
+
 # Infrastructure
 ## Local infrastructure
 local-docker-up = "docker compose up -d"

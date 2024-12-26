@@ -14,6 +14,7 @@ from llm_twin.settings import settings
 
 from .base import SingletonMeta
 
+
 class EmbeddingModelSingleton(metaclass=SingletonMeta):
     """
     A Singleton class that provides a pre-trained transformer model for generating embeddings of text.
@@ -113,6 +114,8 @@ class CrossEncoderModelSingleton(metaclass=SingletonMeta):
             model_name=self._model_id,
             device=self._device,
         )
+
+        # Set the model to evaluation mode to ensure the model is ready for inference.
         self._model.model.eval()
 
     def __call__(
@@ -120,6 +123,13 @@ class CrossEncoderModelSingleton(metaclass=SingletonMeta):
     ) -> NDArray[np.float32] | list[float]:
         """
         Scores pairs of input text using the pre-trained cross-encoder model.
+
+        Args:
+            pairs : List of text pairs (each consisting of the query and a document chunk)
+            to_list (bool, optional): If True, returns a list of embeddings. Otherwise, returns a numpy array. Defaults to True.
+
+        Returns:
+            NDArray[np.float32] or list[float] : The relevance scores.
         """
         scores = self._model.predict(pairs)
 

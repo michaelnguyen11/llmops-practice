@@ -5,6 +5,7 @@ from . import (
     documents,
     embedded_chunks,
     exceptions,
+    queries,
     types,
 )
 
@@ -16,5 +17,5 @@ __all__ = [
     "embedded_chunks",
     "exceptions",
     "types",
-    "vector",
+    "queries",
 ]
