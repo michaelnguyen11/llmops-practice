@@ -32,6 +32,8 @@ run-evaluation-pipeline = "poetry run python -m tools.run --no-cache --run-evalu
 
 # Inference
 call-rag-retrieval-module = "poetry run python -m tools.rag"
+run-inference-ml-service = "poetry run uvicorn tools.ml_service:app --host 0.0.0.0 --port 8000 --reload"
+call-inference-ml-service = "curl -X POST 'http://127.0.0.1:8000/rag' -H 'Content-Type: application/json' -d '{\"query\": \"My name is Hiep Nguyen. Could you draft a LinkedIn post discussing RAG systems? I am particularly interested in how RAG works and how it is integrated with vector DBs and LLMs.\"}'"
 
 # Infrastructure
 ## Local infrastructure

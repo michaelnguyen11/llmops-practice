@@ -18,9 +18,7 @@ evaluation_requirements_path = evaluation_dir / "requirements.txt"
 def run_evaluation_on_sagemaker(is_dummy: bool = True) -> None:
     assert settings.HUGGINGFACE_ACCESS_TOKEN, "Hugging Face access token is required."
     assert settings.OPENAI_API_KEY, "OpenAI API key is required."
-
-    AWS_ARN_ROLE="arn:aws:iam::677276108989:role/SageMakerExecutionRoleLLM"
-    logger.info(f"AWS_ARN_ROLE: {AWS_ARN_ROLE}")
+    assert settings.AWS_ARN_ROLE, "AWS ARN role is required."
 
     if not evaluation_dir.exists():
         raise FileNotFoundError(f"The directory {evaluation_dir} does not exist.")
@@ -45,7 +43,7 @@ def run_evaluation_on_sagemaker(is_dummy: bool = True) -> None:
 
     # Initialize the HuggingFaceProcessor
     hfp = HuggingFaceProcessor(
-        role=AWS_ARN_ROLE,
+        role=settings.AWS_ARN_ROLE,
         instance_count=1,
         instance_type="ml.g5.2xlarge",
         transformers_version="4.36",

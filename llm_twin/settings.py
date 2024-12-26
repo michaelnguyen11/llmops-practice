@@ -84,22 +84,14 @@ class Settings(BaseSettings):
     @classmethod
     def load_settings(cls) -> "Settings":
         """
-        Tries to load the settings from the ZenML secret store. If the secret does not exist, it initializes the settings from the .env file and default values.
+        Initializes the settings from the .env file and default values.
 
         Returns:
             Settings: The initialized settings object.
         """
 
-        try:
-            logger.info("Loading settings from the ZenML secret store.")
-
-            settings_secrets = Client().get_secret("settings")
-            settings = Settings(**settings_secrets.secret_values)
-        except (RuntimeError, KeyError):
-            logger.warning(
-                "Failed to load settings from the ZenML secret store. Defaulting to loading the settings from the '.env' file."
-            )
-            settings = Settings()
+        logger.info("Loading the settings from the '.env' file.")
+        settings = Settings()
 
         return settings
 

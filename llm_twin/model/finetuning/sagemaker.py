@@ -25,9 +25,6 @@ def run_finetuning_on_sagemaker(
     assert settings.HUGGINGFACE_ACCESS_TOKEN, "Hugging Face access token is required."
     assert settings.AWS_ARN_ROLE, "AWS ARN role is required."
 
-    AWS_ARN_ROLE="arn:aws:iam::677276108989:role/SageMakerExecutionRoleLLM"
-    logger.info(f"AWS_ARN_ROLE: {AWS_ARN_ROLE}")
-
     if not finetuning_dir.exists():
         raise FileNotFoundError(f"The directory {finetuning_dir} does not exist.")
     if not finetuning_requirements_path.exists():
@@ -58,7 +55,7 @@ def run_finetuning_on_sagemaker(
         source_dir=str(finetuning_dir),
         instance_type="ml.g5.2xlarge",
         instance_count=1,
-        role=AWS_ARN_ROLE,
+        role=settings.AWS_ARN_ROLE,
         transformers_version="4.36",  # Transformers version used
         pytorch_version="2.1",  # PyTorch version used
         py_version="py310",  # Python version used
