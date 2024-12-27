@@ -47,7 +47,7 @@ def generate_answers(model_id: str, dataset_name: str):
     outputs = llm.generate(dataset["prompt"], sampling_params=sampling_params)
 
     answers = [output.outputs[0].text for output in outputs]
-    dataset = dataset.add_column("answer", answers)
+    dataset = dataset.add_column("answers", answers)
 
     print(f"Uploading results for {model_id}")
     dataset.push_to_hub(
@@ -242,7 +242,7 @@ model_ids = [
         f"{MODEL_HUGGINGFACE_WORKSPACE}/TwinLlama-3.2-3B-DPO",
         default_value="michaelnguyen11/TwinLlama-3.2-3B-DPO",
     ),
-    "meta-llama/Llama-3.2-3B-Instruct",
+    "unsloth/Llama-3.2-3B-Instruct",
 ]
 
 if __name__ == "__main__":

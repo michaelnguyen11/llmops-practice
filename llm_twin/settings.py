@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     # --- Optional settings used to tweak the code. ---
 
     # AWS SageMaker
-    HF_MODEL_ID: str = "michaelnguyen11/TwinLlama-3.2-3B"
+    HF_MODEL_ID: str = "michaelnguyen11/TwinLlama-3.2-3B-DPO"
     GPU_INSTANCE_TYPE: str = "ml.g5.2xlarge"
     SM_NUM_GPUS: int = 1
     MAX_INPUT_LENGTH: int = 2048
@@ -53,8 +53,8 @@ class Settings(BaseSettings):
     GPUS: int = 1  # Number of GPUs
     CPUS: int = 2  # Number of CPU cores
 
-    SAGEMAKER_ENDPOINT_CONFIG_INFERENCE: str = "twin"
-    SAGEMAKER_ENDPOINT_INFERENCE: str = "twin"
+    SAGEMAKER_ENDPOINT_CONFIG_INFERENCE: str = "twin-dpo"
+    SAGEMAKER_ENDPOINT_INFERENCE: str = "twin-dpo"
     TEMPERATURE_INFERENCE: float = 0.01
     TOP_P_INFERENCE: float = 0.9
     MAX_NEW_TOKENS_INFERENCE: int = 150

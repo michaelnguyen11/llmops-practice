@@ -52,3 +52,8 @@ async def rag_endpoint(request: QueryRequest):
         return {"answer": answer}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) from e
+
+
+@app.get("/healthcheck/")
+def healthcheck():
+    return "Health - OK"

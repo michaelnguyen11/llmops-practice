@@ -82,7 +82,7 @@ class LLMInferenceSagemakerEndpoint(Inference):
             invoke_args = {
                 "EndpointName": self.endpoint_name,
                 "ContentType": "application/json",
-                "Body": json.dump(self.payload),
+                "Body": json.dumps(self.payload),
             }
             if self.inference_component_name not in ["None", None]:
                 invoke_args["InferenceComponentName"] = self.inference_component_name
